@@ -1,0 +1,86 @@
+#DB作成---------------------------------------------------------------------
+import sqlite3
+
+# SQLiteDBに接続（ない場合は作成）
+conn = sqlite3.connect('sample_db.db')
+
+# カーソルオブジェクトを作成
+cursor = conn.cursor()
+
+# employeeテーブルを作成
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS employee (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(50),
+    age INTEGER,
+    gender VARCHAR(10)
+)
+""")
+
+# 変更をコミットして接続を閉じる
+conn.commit()
+conn.close()
+
+print("DBとテーブルを正常に作成したよ")
+
+#DB show----------------------------------------------------------------------
+import sqlite3
+
+try:
+    # SQLiteのDBに接続
+    conn = sqlite3.connect("任意のパス.db")
+    
+    # カーソルオブジェクト作成
+    cursor = conn.cursor()
+    
+    # employeeテーブルの中身を取得
+    cursor.execute("SELECT * FROM employee")
+    
+    # 取得したデータ表示
+    rows = cursor.fetchall()
+    for row in rows:
+        print(row)
+
+except sqlite3.Error as e:
+    print(f"DBエラー発生したよ: {e}")
+
+finally:
+    if conn:
+        # 接続を閉じる
+        conn.close()
+
+#DB INSERT---------------------------------------------------------------------
+import sqlite3
+
+try:
+    # SQLiteのDBに接続
+    conn = sqlite3.connect("任意のパス.db")
+
+    # カーソルオブジェクト作成
+    cursor = conn.cursor()
+
+    # INSERT文：4列ぶんプレースホルダーを用意
+    insert_query = "INSERT INTO employee(id, name, age, gender) VALUES (?, ?, ?, ?)"
+
+    # 追加するデータ
+    data_to_insert = [
+        (12, 'Alice', 50, '女'),
+        (15, 'Bob', 30, '男'),
+        (90, 'Charlie', 20, '女')
+    ]
+
+    # DBに一括でデータ追加
+    cursor.executemany(insert_query, data_to_insert)
+
+    # 変更を保存
+    conn.commit()
+
+    print('DBに正常に追加したよ！')
+
+except sqlite3.Error as e:
+    print(f"DBエラー発生したよ: {e}")
+
+finally:
+    if conn:
+        # 接続を閉じる
+        conn.close()
